@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using TechTalk.SpecFlow;
+using TestCalc.Framework.App;
 using TestCalc.Framework.Base;
 using TestCalc.Test.Screens;
 
@@ -8,57 +9,60 @@ namespace SpecFlowCalc.StepDefinitions
     [Binding]
     public sealed class CalculatorStepDefinitions
     {
-        private readonly SetApp _setapp = new SetApp();
-        private readonly CalcWindow _calc = new CalcWindow();
+        private readonly BaseTest _setapp;
+        private readonly CalcWindow _calc;
+        public CalculatorStepDefinitions(BaseTest setapp, CalcWindow calc)
+        {
+            _setapp = setapp;
+            _calc = calc;
+        }
 
-        [Given(@"launch calculator")]
-        public void GivenLaunchCalculator()
+        [Given(@"Calculator was opened")]
+        public void GivenCalculatorWasOpened()
         {
             _setapp.Init();
-            _setapp.Launch();
+            Application.Launch();
         }
 
-
-        [Given(@"enter numbers '([^']*)', '([^']*)' and add them up")]
-        public void GivenEnterNumbersAndAddThemUp(string num1, string num2)
+        [Given(@"Numbers '([^']*)', '([^']*)' were entered and added up")]
+        public void GivenNumbersWereEnteredAndAddedUp(string num1, string num2)
         {
             _calc.EnterNumber(num1);
-            _calc.ClickButton("Сложение");
+            _calc.PlusButtonClick();
             _calc.EnterNumber(num2);
-            _calc.ClickButton("Равно");
+            _calc.EqualButtonClick();
         }
 
-        [Given(@"remember the result")]
-        public void GivenRememberTheResult()
+        [Given(@"The result was remembered")]
+        public void GivenTheResultWasRemembered()
         {
-            _calc.ClickButton("Добавление памяти");
+            _calc.RememberResultButtonClick();
         }
 
-        [When(@"enter number '([^']*)'")]
-        public void WhenEnterNumber(string num)
+        [When(@"The user enters number '([^']*)'")]
+        public void WhenTheUserEntersNumber(string num)
         {
             _calc.EnterNumber(num);
         }
 
-        [When(@"add to a number in memory")]
-        public void WhenAddToANumberInMemory()
+        [When(@"The user adds it to a number in memory")]
+        public void WhenTheUserAddsItToANumberInMemory()
         {
-            _calc.ClickButton("Сложение");
-            _calc.ClickButton("Вызов из памяти");
-            _calc.ClickButton("Равно");
+            _calc.PlusButtonClick();
+            _calc.GetRememberedNumberButtonClick();
+            _calc.EqualButtonClick();
         }
 
-        [Then(@"the result is '([^']*)'")]
-        public void ThenTheResultIs(string result)
+        [Then(@"Number '([^']*)' is shown")]
+        public void ThenNumberIsShown(string result)
         {
             _calc.GetResult().Should().Be(result);
         }
 
-        [Then(@"close calculator")]
-        public void ThenCloseCalculator()
+        [Then(@"The Calculator is closed")]
+        public void ThenTheCalculatorIsClosed()
         {
             _setapp.Cleanup();
         }
-
     }
 }

@@ -2,27 +2,28 @@
 using TestCalc.Test.Screens;
 using TestCalc.Framework.Base;
 using TestCalc.Framework.Utils;
+using TestCalc.Framework.App;
 
 namespace TestCalc.Test.Tests
 {
     [TestFixture]
-    public class Tests : SetApp
+    public class Tests: BaseTest
     {
         private readonly CalcWindow calc = new CalcWindow();
         [Test]
         public void TestCase()
         {
-            Launch();
-            Assert.IsNotNull(app, "Application isn't open");
+            Application.Launch();
+            Assert.IsNotNull(Application.app, "Application isn't open");
             calc.EnterNumber(GetData.TestData.GetValue<string>("num12"));
-            calc.ClickButton("Сложение");
+            calc.PlusButtonClick();
             calc.EnterNumber(GetData.TestData.GetValue<string>("num999"));
-            calc.ClickButton("Равно");
-            calc.ClickButton("Добавление памяти");
+            calc.EqualButtonClick();
+            calc.RememberResultButtonClick();
             calc.EnterNumber(GetData.TestData.GetValue<string>("num19"));
-            calc.ClickButton("Сложение");
-            calc.ClickButton("Вызов из памяти");
-            calc.ClickButton("Равно");
+            calc.PlusButtonClick();
+            calc.GetRememberedNumberButtonClick();
+            calc.EqualButtonClick();
             Assert.AreEqual(GetData.TestData.GetValue<string>("result"), calc.GetResult(), "Results are not the same");
         }
     }
